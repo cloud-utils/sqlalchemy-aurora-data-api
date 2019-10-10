@@ -76,6 +76,8 @@ Links
 * `Documentation (Read the Docs) <https://sqlalchemy-aurora-data-api.readthedocs.io/en/latest/>`_
 * `Package distribution (PyPI) <https://pypi.python.org/pypi/sqlalchemy-aurora-data-api>`_
 * `Change log <https://github.com/chanzuckerberg/sqlalchemy-aurora-data-api/blob/master/Changes.rst>`_
+* `aurora-data-api <https://github.com/chanzuckerberg/aurora-data-api>`_, the Python DB-API 2.0 client that
+  sqlalchemy-aurora-data-api depends on
 
 Bugs
 ~~~~
