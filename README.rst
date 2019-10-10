@@ -40,6 +40,8 @@ keyword arguments are required to connect to the database:
   `Data API documentation <https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/rds-data.html>`_)
 * ``secret_arn`` (the database credentials secret)
 
+All connection string contents other than the database name (path component, ``my_db_name`` below) are ignored.
+
 .. code-block:: python
 
     from sqlalchemy import create_engine
