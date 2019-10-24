@@ -28,6 +28,9 @@ Prerequisites
 
 * Configure your AWS command line credentials using
   `standard AWS conventions <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html>`_.
+  You can verify that everything works correctly by running a test query via the AWS CLI::
+
+      aws rds-data execute-statement --resource-arn RESOURCE_ARN --secret-arn SECRET_ARN --sql "select * from pg_catalog.pg_tables"
 
 Usage
 -----
@@ -38,7 +41,10 @@ keyword arguments are required to connect to the database:
 
 * ``aurora_cluster_arn`` (also referred to as ``resourceArn`` in the
   `Data API documentation <https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/rds-data.html>`_)
+  * If not given as a keyword argument, this can also be specified using the ``AURORA_CLUSTER_ARN`` environment variable
+
 * ``secret_arn`` (the database credentials secret)
+  * If not given as a keyword argument, this can also be specified using the ``AURORA_SECRET_ARN`` environment variable
 
 All connection string contents other than the protocol (dialect) and the database name (path component, ``my_db_name``
 in the example below) are ignored.
@@ -70,6 +76,11 @@ SQL over HTTP, which has advantages in the context of AWS Lambda:
   `AWS Lambda freeze-thaw cycles <https://docs.aws.amazon.com/lambda/latest/dg/running-lambda-code.html>`_, causing
   connection errors and burdening the database server with abandoned invalid connections)
 * It uses AWS role-based authentication, eliminating the need for the Lambda to handle database credentials directly
+
+Debugging
+---------
+
+
 
 Links
 -----
