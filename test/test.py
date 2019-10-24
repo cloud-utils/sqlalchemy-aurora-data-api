@@ -30,7 +30,7 @@ class User(Base):
 class TestAuroraDataAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        sqlalchemy_aurora_data_api.register_sqlalchemy_dialects()
+        sqlalchemy_aurora_data_api.register_dialects()
         cls.db_name = os.environ.get("AURORA_DB_NAME", __name__)
         cls.engine = create_engine('postgresql+auroradataapi://:@/' + cls.db_name)
 

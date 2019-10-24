@@ -15,7 +15,7 @@ class AuroraPostgresDataAPIDialect(PGDialect):
         return aurora_data_api
 
 
-def register_sqlalchemy_dialects():
+def register_dialects():
     from sqlalchemy.dialects import registry
     registry.register("mysql.auroradataapi", __name__, AuroraMySQLDataAPIDialect.__name__)
     registry.register("postgresql.auroradataapi", __name__, AuroraPostgresDataAPIDialect.__name__)
