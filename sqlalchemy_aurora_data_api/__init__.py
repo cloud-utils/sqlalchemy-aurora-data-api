@@ -16,7 +16,7 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
 
 class _ADA_SA_JSON(SA_JSON):
     def bind_expression(self, value):
-        return cast(value, JSON)
+        return cast(value, SA_JSON)
 
 
 class _ADA_JSON(JSON):
