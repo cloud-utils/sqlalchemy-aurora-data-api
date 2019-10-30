@@ -69,7 +69,7 @@ class _ADA_TIMESTAMP(TIMESTAMP):
 
 class AuroraPostgresDataAPIDialect(PGDialect):
     colspecs = util.update_copy(PGDialect.colspecs, {
-        SA_JSON: _ADA_JSON,
+        SA_JSON: _ADA_SA_JSON,
         JSON: _ADA_JSON,
         JSONB: _ADA_JSONB,
         UUID: _ADA_UUID,
