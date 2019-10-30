@@ -1,4 +1,4 @@
-import json
+import json, datetime
 
 import aurora_data_api
 from sqlalchemy import cast, util
@@ -34,6 +34,7 @@ class _ADA_UUID(UUID):
         return cast(value, UUID)
 
 
+# TODO: is TZ awareness needed here?
 class _ADA_DATE(DATE):
     def bind_processor(self, dialect):
         def process(value):
@@ -42,6 +43,11 @@ class _ADA_DATE(DATE):
 
     def bind_expression(self, value):
         return cast(value, DATE)
+
+    def result_processor(self, dialect, coltype):
+        def process(value):
+            return datetime.date.fromisoformat(value)
+        return process
 
 
 class _ADA_TIMESTAMP(TIMESTAMP):
@@ -52,6 +58,13 @@ class _ADA_TIMESTAMP(TIMESTAMP):
 
     def bind_expression(self, value):
         return cast(value, TIMESTAMP)
+
+    def result_processor(self, dialect, coltype):
+        def process(value):
+            # FIXME: when the microsecond component ends in zero, it is omitted from the return value,
+            # and datetime.datetime.fromisoformat can't parse it
+            return datetime.datetime.fromisoformat(value)
+        return process
 
 
 class AuroraPostgresDataAPIDialect(PGDialect):

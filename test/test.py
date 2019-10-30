@@ -1,8 +1,8 @@
-import os, sys, json, unittest, logging, datetime
+import os, sys, json, unittest, logging, datetime, getpass
 from uuid import uuid4
 
-from sqlalchemy import create_engine, Column, Integer, String, Boolean
-from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIMESTAMP
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, LargeBinary
+from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIMESTAMP, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -18,7 +18,7 @@ Base = declarative_base()
 
 
 class User(Base):
-    __tablename__ = "sqlalchemy_aurora_data_api_test"
+    __tablename__ = "sqlalchemy_aurora_data_api_testD"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -30,6 +30,9 @@ class User(Base):
     nonesuch = Column(Boolean, nullable=True)
     birthday = Column(DATE)
     added = Column(TIMESTAMP)
+    floated = Column(Float)
+    nybbled = Column(LargeBinary)
+    friends = Column(ARRAY(String))
 
 
 class TestAuroraDataAPI(unittest.TestCase):
@@ -37,7 +40,9 @@ class TestAuroraDataAPI(unittest.TestCase):
     def setUpClass(cls):
         sqlalchemy_aurora_data_api.register_dialects()
         cls.db_name = os.environ.get("AURORA_DB_NAME", __name__)
-        cls.engine = create_engine('postgresql+auroradataapi://:@/' + cls.db_name)
+        dialect = "postgresql+auroradataapi://"
+        # dialect = "postgresql+psycopg2://" + getpass.getuser()
+        cls.engine = create_engine(dialect + ':@/' + cls.db_name)
 
     @classmethod
     def tearDownClass(cls):
@@ -51,11 +56,19 @@ class TestAuroraDataAPI(unittest.TestCase):
     def test_orm(self):
         uuid = uuid4()
         doc = {'foo': [1, 2, 3]}
+        blob = b"0123456789ABCDEF" * 1024
         Base.metadata.create_all(self.engine)
+        added = datetime.datetime.now()
         ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), woke=True,
-                       birthday=datetime.datetime.fromtimestamp(0), added=datetime.datetime.now())
+                       birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob)
+        # FIXME: arrays are not working
+        # friends=["Alice", "Bob"])
         Session = sessionmaker(bind=self.engine)
         session = Session()
+
+        session.query(User).delete()
+        session.commit()
+
         session.add(ed_user)
         self.assertEqual(session.query(User).filter_by(name='ed').first().name, "ed")
         session.commit()
@@ -64,6 +77,10 @@ class TestAuroraDataAPI(unittest.TestCase):
         self.assertEqual(u.doc, doc)
         self.assertEqual(u.woke, True)
         self.assertEqual(u.nonesuch, None)
+        self.assertEqual(u.birthday, datetime.date.fromtimestamp(0))
+        self.assertEqual(u.added, added)
+        self.assertEqual(u.floated, 1.2)
+        self.assertEqual(u.nybbled, blob)
 
 
 if __name__ == "__main__":
