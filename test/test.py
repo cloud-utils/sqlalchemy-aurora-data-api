@@ -1,6 +1,8 @@
-import os, sys, json, unittest, logging, uuid
+import os, sys, json, unittest, logging, datetime
+from uuid import uuid4
 
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, Boolean
+from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -22,9 +24,12 @@ class User(Base):
     name = Column(String)
     fullname = Column(String)
     nickname = Column(String)
-
-    def __repr__(self):
-        return "<User(name='%s', fullname='%s', nickname='%s')>" % (self.name, self.fullname, self.nickname)
+    doc = Column(JSONB)
+    uuid = Column(UUID)
+    woke = Column(Boolean, nullable=True)
+    nonesuch = Column(Boolean, nullable=True)
+    birthday = Column(DATE)
+    added = Column(TIMESTAMP)
 
 
 class TestAuroraDataAPI(unittest.TestCase):
@@ -44,14 +49,21 @@ class TestAuroraDataAPI(unittest.TestCase):
                 print(result)
 
     def test_orm(self):
+        uuid = uuid4()
+        doc = {'foo': [1, 2, 3]}
         Base.metadata.create_all(self.engine)
-        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname')
+        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), woke=True,
+                       birthday=datetime.datetime.fromtimestamp(0), added=datetime.datetime.now())
         Session = sessionmaker(bind=self.engine)
         session = Session()
         session.add(ed_user)
         self.assertEqual(session.query(User).filter_by(name='ed').first().name, "ed")
         session.commit()
         self.assertGreater(session.query(User).filter(User.name.like('%ed')).count(), 0)
+        u = session.query(User).filter(User.name.like('%ed')).first()
+        self.assertEqual(u.doc, doc)
+        self.assertEqual(u.woke, True)
+        self.assertEqual(u.nonesuch, None)
 
 
 if __name__ == "__main__":
