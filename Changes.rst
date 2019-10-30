@@ -1,3 +1,8 @@
+Changes for v0.1.0 (2019-10-29)
+===============================
+
+-  Fix postgresql type compatibility issues
+
 Changes for v0.0.2 (2019-10-24)
 ===============================
 
