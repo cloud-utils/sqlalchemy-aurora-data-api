@@ -81,6 +81,7 @@ class TestAuroraDataAPI(unittest.TestCase):
         self.assertEqual(u.added, added)
         self.assertEqual(u.floated, 1.2)
         self.assertEqual(u.nybbled, blob)
+        self.assertEqual(u.friends, ["Alice", "Bob"])
 
 
 if __name__ == "__main__":
