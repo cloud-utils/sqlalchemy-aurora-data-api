@@ -1,3 +1,8 @@
+Changes for v0.1.2 (2019-10-31)
+===============================
+
+-  Fix timestamp microsecond handling
+
 Changes for v0.1.1 (2019-10-31)
 ===============================
 
