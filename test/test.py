@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))  # noqa
 
-import sqlalchemy_aurora_data_api
+from sqlalchemy_aurora_data_api import register_dialects, _ADA_TIMESTAMP
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("aurora_data_api").setLevel(logging.DEBUG)
@@ -39,7 +39,7 @@ class User(Base):
 class TestAuroraDataAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        sqlalchemy_aurora_data_api.register_dialects()
+        register_dialects()
         cls.db_name = os.environ.get("AURORA_DB_NAME", __name__)
         dialect = "postgresql+auroradataapi://"
         # dialect = "postgresql+psycopg2://" + getpass.getuser()
@@ -58,11 +58,12 @@ class TestAuroraDataAPI(unittest.TestCase):
         uuid = uuid4()
         doc = {'foo': [1, 2, 3]}
         blob = b"0123456789ABCDEF" * 1024
+        friends = ["Scarlett O'Hara", 'Ada "Hacker" Lovelace']
         Base.metadata.create_all(self.engine)
         added = datetime.datetime.now()
         ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), woke=True,
                        birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
-                       friends=["Alice", "Bob"])
+                       friends=friends)
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
@@ -81,7 +82,12 @@ class TestAuroraDataAPI(unittest.TestCase):
         self.assertEqual(u.added, added)
         self.assertEqual(u.floated, 1.2)
         self.assertEqual(u.nybbled, blob)
-        self.assertEqual(u.friends, ["Alice", "Bob"])
+        self.assertEqual(u.friends, friends)
+
+    def test_timestamp_microsecond_padding(self):
+        ts = '2019-10-31 09:37:17.3186'
+        processor = _ADA_TIMESTAMP.result_processor(_ADA_TIMESTAMP, None, None)
+        self.assertEqual(processor(ts), datetime.datetime.fromisoformat(ts.ljust(26, "0")))
 
 
 if __name__ == "__main__":

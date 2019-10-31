@@ -1,11 +1,12 @@
-import json, datetime
+import json, datetime, re
 
-import aurora_data_api
 from sqlalchemy import cast, func, util
 from sqlalchemy.types import JSON as SA_JSON
 from sqlalchemy.dialects.postgresql.base import PGDialect
 from sqlalchemy.dialects.postgresql import JSON, JSONB, UUID, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.dialects.mysql.base import MySQLDialect
+
+import aurora_data_api
 
 
 class AuroraMySQLDataAPIDialect(MySQLDialect):
@@ -36,6 +37,8 @@ class _ADA_UUID(UUID):
 
 # TODO: is TZ awareness needed here?
 class _ADA_DATETIME_MIXIN:
+    truncated_iso_ts = re.compile(r"\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.(\d+)")
+
     def bind_processor(self, dialect):
         def process(value):
             return value.isoformat() if isinstance(value, self.py_type) else value
@@ -46,8 +49,10 @@ class _ADA_DATETIME_MIXIN:
 
     def result_processor(self, dialect, coltype):
         def process(value):
-            # FIXME: when the microsecond component ends in zero, it is omitted from the return value,
-            # and datetime.datetime.fromisoformat can't parse it
+            # When the microsecond component ends in zeros, they are omitted from the return value,
+            # and datetime.datetime.fromisoformat can't parse the result (example: '2019-10-31 09:37:17.31869'). Pad it.
+            if isinstance(value, str) and self.truncated_iso_ts.match(value):
+                value = self.truncated_iso_ts.sub(lambda match: match.group(0).ljust(26, "0"), value)
             return self.py_type.fromisoformat(value) if isinstance(value, str) else value
         return process
 
