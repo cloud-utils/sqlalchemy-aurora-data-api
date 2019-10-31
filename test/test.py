@@ -2,7 +2,7 @@ import os, sys, json, unittest, logging, datetime, getpass
 from uuid import uuid4
 
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, LargeBinary
-from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIMESTAMP, ARRAY
+from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -18,7 +18,7 @@ Base = declarative_base()
 
 
 class User(Base):
-    __tablename__ = "sqlalchemy_aurora_data_api_testD"
+    __tablename__ = "sqlalchemy_aurora_data_api_test"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -29,6 +29,7 @@ class User(Base):
     woke = Column(Boolean, nullable=True)
     nonesuch = Column(Boolean, nullable=True)
     birthday = Column(DATE)
+    wakes_up_at = Column(TIME)
     added = Column(TIMESTAMP)
     floated = Column(Float)
     nybbled = Column(LargeBinary)
@@ -60,9 +61,8 @@ class TestAuroraDataAPI(unittest.TestCase):
         Base.metadata.create_all(self.engine)
         added = datetime.datetime.now()
         ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), woke=True,
-                       birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob)
-        # FIXME: arrays are not working
-        # friends=["Alice", "Bob"])
+                       birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
+                       friends=["Alice", "Bob"])
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
