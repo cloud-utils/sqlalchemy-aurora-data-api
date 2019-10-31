@@ -37,7 +37,7 @@ class _ADA_UUID(UUID):
 
 # TODO: is TZ awareness needed here?
 class _ADA_DATETIME_MIXIN:
-    truncated_iso_ts = re.compile(r"\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.(\d+)")
+    iso_ts_re = re.compile(r"\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.\d+")
 
     def bind_processor(self, dialect):
         def process(value):
@@ -51,8 +51,8 @@ class _ADA_DATETIME_MIXIN:
         def process(value):
             # When the microsecond component ends in zeros, they are omitted from the return value,
             # and datetime.datetime.fromisoformat can't parse the result (example: '2019-10-31 09:37:17.31869'). Pad it.
-            if isinstance(value, str) and self.truncated_iso_ts.match(value):
-                value = self.truncated_iso_ts.sub(lambda match: match.group(0).ljust(26, "0"), value)
+            if isinstance(value, str) and self.iso_ts_re.match(value):
+                value = self.iso_ts_re.sub(lambda match: match.group(0).ljust(26, "0"), value)
             return self.py_type.fromisoformat(value) if isinstance(value, str) else value
         return process
 
