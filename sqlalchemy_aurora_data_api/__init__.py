@@ -14,6 +14,9 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
     def dbapi(cls):
         return aurora_data_api
 
+    def _detect_charset(self, connection):
+        return connection.connection.charset
+
 
 class _ADA_SA_JSON(SA_JSON):
     def bind_expression(self, value):
