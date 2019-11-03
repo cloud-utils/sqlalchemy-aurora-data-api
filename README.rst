@@ -82,7 +82,11 @@ SQL over HTTP, which has advantages in the context of AWS Lambda:
 Debugging
 ---------
 
+This package uses standard Python logging conventions. To enable debug output, set the package log level to DEBUG::
 
+    logging.basicConfig()
+
+    logging.getLogger("aurora_data_api").setLevel(logging.DEBUG)
 
 Links
 -----
