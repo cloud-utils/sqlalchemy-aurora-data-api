@@ -7,7 +7,9 @@ from sqlalchemy.dialects.postgresql import JSON, JSONB, UUID, DATE, TIME, TIMEST
 from sqlalchemy.dialects.mysql.base import MySQLDialect
 
 import aurora_data_api
+import boto3
 
+client = boto3.client("rds-data")
 
 class AuroraMySQLDataAPIDialect(MySQLDialect):
     @classmethod
@@ -17,6 +19,36 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
     def _detect_charset(self, connection):
         return connection.connection.charset
 
+    def has_table(self, connection, table_name, schema=None):
+        # SHOW TABLE STATUS LIKE and SHOW TABLES LIKE do not function properly
+        # on macosx (and maybe win?) with multibyte table names.
+        #
+        # TODO: if this is not a problem on win, make the strategy swappable
+        # based on platform.  DESCRIBE is slower.
+
+        full_name = ".".join(
+            self.identifier_preparer._quote_free_identifiers(
+                schema, table_name
+            )
+        )
+        st = "DESCRIBE %s" % full_name
+        rs = None
+        try:
+            try:
+                rs = connection.execution_options(
+                    skip_user_error_events=True
+                ).execute(st)
+                have = rs.fetchone() is not None
+                rs.close()
+                return have
+            # TODO: Is there a better way to get BadRequestExceptions rather than creating actual client?
+            except client.exceptions.BadRequestException as e:
+                if "doesn't exist" in str(e):
+                    return False
+                raise
+        finally:
+            if rs:
+                rs.close()
 
 class _ADA_SA_JSON(SA_JSON):
     def bind_expression(self, value):
