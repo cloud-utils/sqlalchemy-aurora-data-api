@@ -14,6 +14,10 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
     def dbapi(cls):
         return aurora_data_api
 
+    def _detect_charset(self, connection):
+        # SHOW VARIABLES LIKE 'character_set%%'
+        return "latin1"
+
 
 class _ADA_SA_JSON(SA_JSON):
     def bind_expression(self, value):
