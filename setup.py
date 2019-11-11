@@ -13,7 +13,7 @@ setup(
     long_description=open('README.rst').read(),
     install_requires=[
         'sqlalchemy',
-        'aurora-data-api >= 0.1.0'
+        'aurora-data-api >= 0.1.2'
     ],
     extras_require={
     },
