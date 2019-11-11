@@ -22,9 +22,9 @@ class BasicUser(BasicBase):
     __tablename__ = "sqlalchemy_aurora_data_api_test"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    fullname = Column(String)
-    nickname = Column(String)
+    name = Column(String(64))
+    fullname = Column(String(64))
+    nickname = Column(String(64))
 
 
 class User(Base):
@@ -113,18 +113,18 @@ class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
 
     def test_orm(self):
         BasicBase.metadata.create_all(self.engine)
-        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname')
+        ed_user = BasicUser(name='ed', fullname='Ed Jones', nickname='edsnickname')
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
-        session.query(User).delete()
+        session.query(BasicUser).delete()
         session.commit()
 
         session.add(ed_user)
-        self.assertEqual(session.query(User).filter_by(name='ed').first().name, "ed")
+        self.assertEqual(session.query(BasicUser).filter_by(name='ed').first().name, "ed")
         session.commit()
-        self.assertGreater(session.query(User).filter(User.name.like('%ed')).count(), 0)
-        u = session.query(User).filter(User.name.like('%ed')).first()
+        self.assertGreater(session.query(BasicUser).filter(BasicUser.name.like('%ed')).count(), 0)
+        u = session.query(BasicUser).filter(BasicUser.name.like('%ed')).first()
         self.assertEqual(u.nickname, "edsnickname")
 
 
