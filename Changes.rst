@@ -1,3 +1,10 @@
+Changes for v0.1.4 (2019-11-18)
+===============================
+
+-  Conform to dialect interface definition
+
+-  MySQL: Return actual client charset
+
 Changes for v0.1.3 (2019-11-10)
 ===============================
 
