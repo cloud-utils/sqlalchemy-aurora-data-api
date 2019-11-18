@@ -1,7 +1,7 @@
 import os, sys, json, unittest, logging, datetime, getpass
 from uuid import uuid4
 
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, LargeBinary
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric
 from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -13,6 +13,83 @@ from sqlalchemy_aurora_data_api import register_dialects, _ADA_TIMESTAMP
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("aurora_data_api").setLevel(logging.DEBUG)
 logging.getLogger("urllib3.connectionpool").setLevel(logging.DEBUG)
+
+dialect_interface_attributes = {
+    "name",
+    "driver",
+    "positional",
+    "paramstyle",
+    "convert_unicode",
+    "encoding",
+    "statement_compiler",
+    "ddl_compiler",
+    "server_version_info",
+    "default_schema_name",
+    "execution_ctx_cls",
+    "execute_sequence_format",
+    "preparer",
+    "supports_alter",
+    "max_identifier_length",
+    "supports_unicode_statements",
+    "supports_unicode_binds",
+    "supports_sane_rowcount",
+    "supports_sane_multi_rowcount",
+    "preexecute_autoincrement_sequences",
+    "implicit_returning",
+    "colspecs",
+    "supports_default_values",
+    "supports_sequences",
+    "sequences_optional",
+    "supports_native_enum",
+    "supports_native_boolean",
+    "dbapi_exception_translation_map"
+}
+
+dialect_interface_methods = {
+    "connect",
+    "create_connect_args",
+    "create_xid",
+    "denormalize_name",
+    "do_begin",
+    "do_begin_twophase",
+    "do_close",
+    "do_commit",
+    "do_commit_twophase",
+    "do_execute",
+    "do_execute_no_params",
+    "do_executemany",
+    "do_prepare_twophase",
+    "do_recover_twophase",
+    "do_release_savepoint",
+    "do_rollback",
+    "do_rollback_to_savepoint",
+    "do_rollback_twophase",
+    "do_savepoint",
+    "engine_created",
+    "get_check_constraints",
+    "get_columns",
+    "get_dialect_cls",
+    "get_foreign_keys",
+    "get_indexes",
+    "get_isolation_level",
+    "get_pk_constraint",
+    "get_table_comment",
+    "get_table_names",
+    "get_temp_table_names",
+    "get_temp_view_names",
+    "get_unique_constraints",
+    "get_view_definition",
+    "get_view_names",
+    "has_sequence",
+    "has_table",
+    "initialize",
+    "is_disconnect",
+    "normalize_name",
+    "reflecttable",
+    "reset_isolation_level",
+    "set_isolation_level",
+    "type_descriptor"
+}
 
 BasicBase = declarative_base()
 Base = declarative_base()
@@ -28,7 +105,7 @@ class BasicUser(BasicBase):
 
 
 class User(Base):
-    __tablename__ = "sqlalchemy_aurora_data_api_testI"
+    __tablename__ = "sqlalchemy_aurora_data_api_testJ"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -44,23 +121,33 @@ class User(Base):
     floated = Column(Float)
     nybbled = Column(LargeBinary)
     friends = Column(ARRAY(String))
+    num_friends = Numeric(asdecimal=True)
+    num_laptops = Numeric(asdecimal=False)
 
 
 class TestAuroraDataAPI(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):
-        register_dialects()
-        cls.db_name = os.environ.get("AURORA_DB_NAME", __name__)
-        cls.engine = create_engine(cls.dialect + ':@/' + cls.db_name)
-
-    @classmethod
     def tearDownClass(cls):
         pass
+
+    def test_interface_conformance(self):
+        for attr in dialect_interface_attributes:
+            self.assertIn(attr, dir(self.engine.dialect))
+
+        for attr in dialect_interface_methods:
+            self.assertIn(attr, dir(self.engine.dialect))
+            assert callable(getattr(self.engine.dialect, attr))
 
 
 class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
     dialect = "postgresql+auroradataapi://"
     # dialect = "postgresql+psycopg2://" + getpass.getuser()
+
+    @classmethod
+    def setUpClass(cls):
+        register_dialects()
+        cls.db_name = os.environ.get("AURORA_DB_NAME", __name__)
+        cls.engine = create_engine(cls.dialect + ':@/' + cls.db_name)
 
     def test_execute(self):
         with self.engine.connect() as conn:
@@ -76,7 +163,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         added = datetime.datetime.now()
         ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), woke=True,
                        birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
-                       friends=friends)
+                       friends=friends, num_friends=500, num_laptops=9000)
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
@@ -96,6 +183,8 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         self.assertEqual(u.floated, 1.2)
         self.assertEqual(u.nybbled, blob)
         self.assertEqual(u.friends, friends)
+        self.assertEqual(u.num_friends, 500)
+        self.assertEqual(u.num_laptops, 9000)
 
     def test_timestamp_microsecond_padding(self):
         ts = '2019-10-31 09:37:17.3186'
@@ -105,6 +194,12 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
 
 class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
     dialect = "mysql+auroradataapi://"
+
+    @classmethod
+    def setUpClass(cls):
+        register_dialects()
+        cls.db_name = os.environ.get("AURORA_DB_NAME", __name__)
+        cls.engine = create_engine(cls.dialect + ':@/' + cls.db_name + "?charset=utf8mb4")
 
     def test_execute(self):
         with self.engine.connect() as conn:

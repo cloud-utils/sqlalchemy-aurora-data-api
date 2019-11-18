@@ -10,6 +10,10 @@ import aurora_data_api
 
 
 class AuroraMySQLDataAPIDialect(MySQLDialect):
+    # See https://docs.sqlalchemy.org/en/13/core/internals.html#sqlalchemy.engine.interfaces.Dialect
+    driver = "aurora_data_api"
+    default_schema_name = None
+
     @classmethod
     def dbapi(cls):
         return aurora_data_api
@@ -90,6 +94,9 @@ class _ADA_ARRAY(ARRAY):
 
 
 class AuroraPostgresDataAPIDialect(PGDialect):
+    # See https://docs.sqlalchemy.org/en/13/core/internals.html#sqlalchemy.engine.interfaces.Dialect
+    driver = "aurora_data_api"
+    default_schema_name = None
     colspecs = util.update_copy(PGDialect.colspecs, {
         SA_JSON: _ADA_SA_JSON,
         JSON: _ADA_JSON,
