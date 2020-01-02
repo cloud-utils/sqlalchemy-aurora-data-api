@@ -1,7 +1,7 @@
 import json, datetime, re
 
 from sqlalchemy import cast, func, util
-from sqlalchemy.types import JSON as SA_JSON
+import sqlalchemy.sql.sqltypes as sqltypes
 from sqlalchemy.dialects.postgresql.base import PGDialect
 from sqlalchemy.dialects.postgresql import JSON, JSONB, UUID, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.dialects.mysql.base import MySQLDialect
@@ -25,9 +25,9 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
         return exception.args[0]
 
 
-class _ADA_SA_JSON(SA_JSON):
+class _ADA_SA_JSON(sqltypes.JSON):
     def bind_expression(self, value):
-        return cast(value, SA_JSON)
+        return cast(value, sqltypes.JSON)
 
 
 class _ADA_JSON(JSON):
@@ -69,17 +69,17 @@ class _ADA_DATETIME_MIXIN:
 
 class _ADA_DATE(_ADA_DATETIME_MIXIN, DATE):
     py_type = datetime.date
-    sa_type = DATE
+    sa_type = sqltypes.Date
 
 
 class _ADA_TIME(_ADA_DATETIME_MIXIN, TIME):
     py_type = datetime.time
-    sa_type = TIME
+    sa_type = sqltypes.Time
 
 
 class _ADA_TIMESTAMP(_ADA_DATETIME_MIXIN, TIMESTAMP):
     py_type = datetime.datetime
-    sa_type = TIMESTAMP
+    sa_type = sqltypes.DateTime
 
 
 class _ADA_ARRAY(ARRAY):
@@ -98,13 +98,13 @@ class AuroraPostgresDataAPIDialect(PGDialect):
     driver = "aurora_data_api"
     default_schema_name = None
     colspecs = util.update_copy(PGDialect.colspecs, {
-        SA_JSON: _ADA_SA_JSON,
+        sqltypes.JSON: _ADA_SA_JSON,
         JSON: _ADA_JSON,
         JSONB: _ADA_JSONB,
         UUID: _ADA_UUID,
-        DATE: _ADA_DATE,
-        TIME: _ADA_TIME,
-        TIMESTAMP: _ADA_TIMESTAMP,
+        sqltypes.Date: _ADA_DATE,
+        sqltypes.Time: _ADA_TIME,
+        sqltypes.DateTime: _ADA_TIMESTAMP,
         ARRAY: _ADA_ARRAY
     })
     @classmethod

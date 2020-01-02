@@ -1,7 +1,7 @@
 import os, sys, json, unittest, logging, datetime, getpass
 from uuid import uuid4
 
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric, Date, Text
 from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -105,7 +105,7 @@ class BasicUser(BasicBase):
 
 
 class User(Base):
-    __tablename__ = "sqlalchemy_aurora_data_api_testJ"
+    __tablename__ = "sqlalchemy_aurora_data_api_testK"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -123,6 +123,8 @@ class User(Base):
     friends = Column(ARRAY(String))
     num_friends = Numeric(asdecimal=True)
     num_laptops = Numeric(asdecimal=False)
+    first_date = Column(Date)
+    note = Column(Text)
 
 
 class TestAuroraDataAPI(unittest.TestCase):
@@ -163,7 +165,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         added = datetime.datetime.now()
         ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), woke=True,
                        birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
-                       friends=friends, num_friends=500, num_laptops=9000)
+                       friends=friends, num_friends=500, num_laptops=9000, first_date=added, note='note')
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
@@ -185,6 +187,8 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         self.assertEqual(u.friends, friends)
         self.assertEqual(u.num_friends, 500)
         self.assertEqual(u.num_laptops, 9000)
+        self.assertEqual(u.first_date, added.date())
+        self.assertEqual(u.note, 'note')
 
     def test_timestamp_microsecond_padding(self):
         ts = '2019-10-31 09:37:17.3186'
