@@ -1,3 +1,8 @@
+Changes for v0.1.5 (2020-01-01)
+===============================
+
+Fix handling of non-dialect-specific datetime types
+
 Changes for v0.1.4 (2019-11-18)
 ===============================
 
