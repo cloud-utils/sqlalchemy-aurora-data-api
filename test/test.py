@@ -1,7 +1,7 @@
-import os, sys, json, unittest, logging, datetime, getpass
+import os, sys, json, unittest, logging, datetime, getpass, enum
 from uuid import uuid4
 
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric, Date, Text
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric, Date, Text, Enum
 from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -95,6 +95,12 @@ BasicBase = declarative_base()
 Base = declarative_base()
 
 
+class Socks(enum.Enum):
+    red = 1
+    green = 2
+    black = 3
+
+
 class BasicUser(BasicBase):
     __tablename__ = "sqlalchemy_aurora_data_api_test"
 
@@ -105,7 +111,7 @@ class BasicUser(BasicBase):
 
 
 class User(Base):
-    __tablename__ = "sqlalchemy_aurora_data_api_testK"
+    __tablename__ = "sqlalchemy_aurora_data_api_testL"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -125,6 +131,7 @@ class User(Base):
     num_laptops = Numeric(asdecimal=False)
     first_date = Column(Date)
     note = Column(Text)
+    socks = Column(Enum(Socks))
 
 
 class TestAuroraDataAPI(unittest.TestCase):
@@ -165,7 +172,8 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         added = datetime.datetime.now()
         ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), woke=True,
                        birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
-                       friends=friends, num_friends=500, num_laptops=9000, first_date=added, note='note')
+                       friends=friends, num_friends=500, num_laptops=9000, first_date=added, note='note',
+                       socks=Socks.red)
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
@@ -189,6 +197,14 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         self.assertEqual(u.num_laptops, 9000)
         self.assertEqual(u.first_date, added.date())
         self.assertEqual(u.note, 'note')
+        self.assertEqual(u.socks, Socks.red)
+
+        u.socks = Socks.green
+        session.commit()
+
+        session2 = Session()
+        u2 = session2.query(User).filter(User.name.like('%ed')).first()
+        self.assertEqual(u2.socks, Socks.green)
 
     def test_timestamp_microsecond_padding(self):
         ts = '2019-10-31 09:37:17.3186'

@@ -3,7 +3,7 @@ import json, datetime, re
 from sqlalchemy import cast, func, util
 import sqlalchemy.sql.sqltypes as sqltypes
 from sqlalchemy.dialects.postgresql.base import PGDialect
-from sqlalchemy.dialects.postgresql import JSON, JSONB, UUID, DATE, TIME, TIMESTAMP, ARRAY
+from sqlalchemy.dialects.postgresql import JSON, JSONB, UUID, DATE, TIME, TIMESTAMP, ARRAY, ENUM
 from sqlalchemy.dialects.mysql.base import MySQLDialect
 
 import aurora_data_api
@@ -43,6 +43,11 @@ class _ADA_JSONB(JSONB):
 class _ADA_UUID(UUID):
     def bind_expression(self, value):
         return cast(value, UUID)
+
+
+class _ADA_ENUM(ENUM):
+    def bind_expression(self, value):
+        return cast(value, self)
 
 
 # TODO: is TZ awareness needed here?
@@ -105,6 +110,7 @@ class AuroraPostgresDataAPIDialect(PGDialect):
         sqltypes.Date: _ADA_DATE,
         sqltypes.Time: _ADA_TIME,
         sqltypes.DateTime: _ADA_TIMESTAMP,
+        sqltypes.Enum: _ADA_ENUM,
         ARRAY: _ADA_ARRAY
     })
     @classmethod
