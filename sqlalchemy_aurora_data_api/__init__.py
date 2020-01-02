@@ -1,3 +1,7 @@
+"""
+sqlalchemy-aurora-data-api
+"""
+
 import json, datetime, re
 
 from sqlalchemy import cast, func, util
