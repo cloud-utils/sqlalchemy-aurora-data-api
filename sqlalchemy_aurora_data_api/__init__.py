@@ -12,23 +12,6 @@ from sqlalchemy.dialects.mysql.base import MySQLDialect
 
 import aurora_data_api
 
-
-class AuroraMySQLDataAPIDialect(MySQLDialect):
-    # See https://docs.sqlalchemy.org/en/13/core/internals.html#sqlalchemy.engine.interfaces.Dialect
-    driver = "aurora_data_api"
-    default_schema_name = None
-
-    @classmethod
-    def dbapi(cls):
-        return aurora_data_api
-
-    def _detect_charset(self, connection):
-        return connection.execute("SHOW VARIABLES LIKE 'character_set_client'").fetchone()[1]
-
-    def _extract_error_code(self, exception):
-        return exception.args[0].value
-
-
 class _ADA_SA_JSON(sqltypes.JSON):
     def bind_expression(self, value):
         return cast(value, sqltypes.JSON)
@@ -100,6 +83,26 @@ class _ADA_ARRAY(ARRAY):
 
     def bind_expression(self, value):
         return func.string_to_array(value, "\v")
+
+class AuroraMySQLDataAPIDialect(MySQLDialect):
+    # See https://docs.sqlalchemy.org/en/13/core/internals.html#sqlalchemy.engine.interfaces.Dialect
+    driver = "aurora_data_api"
+    default_schema_name = None
+    colspecs = util.update_copy(MySQLDialect.colspecs, {
+        sqltypes.Date: _ADA_DATE,
+        sqltypes.Time: _ADA_TIME,
+        sqltypes.DateTime: _ADA_TIMESTAMP,
+    })
+
+    @classmethod
+    def dbapi(cls):
+        return aurora_data_api
+
+    def _detect_charset(self, connection):
+        return connection.execute("SHOW VARIABLES LIKE 'character_set_client'").fetchone()[1]
+
+    def _extract_error_code(self, exception):
+        return exception.args[0].value
 
 
 class AuroraPostgresDataAPIDialect(PGDialect):
