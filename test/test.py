@@ -170,7 +170,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         friends = ["Scarlett O'Hara", 'Ada "Hacker" Lovelace']
         Base.metadata.create_all(self.engine)
         added = datetime.datetime.now()
-        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), woke=True,
+        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=uuid, woke=True,
                        birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
                        friends=friends, num_friends=500, num_laptops=9000, first_date=added, note='note',
                        socks=Socks.red)
