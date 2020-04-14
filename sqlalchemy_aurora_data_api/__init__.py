@@ -26,7 +26,7 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
         return connection.execute("SHOW VARIABLES LIKE 'character_set_client'").fetchone()[1]
 
     def _extract_error_code(self, exception):
-        return exception.args[0]
+        return exception.args[0].value
 
 
 class _ADA_SA_JSON(sqltypes.JSON):
