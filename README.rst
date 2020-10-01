@@ -24,13 +24,19 @@ Prerequisites
   `AWS Secrets Manager <https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html>`_ using a format
   expected by the Data API (a JSON object with the keys ``username`` and ``password``)::
 
-      aws secretsmanager put-secret-value --secret-id MY_DB_CREDENTIALS --secret-string "$(jq -n '.username=env.PGUSER | .password=env.PGPASSWORD')"
+      aws secretsmanager create-secret --secret-id rds-db-credentials/MY_DB
+      aws secretsmanager put-secret-value --secret-id rds-db-credentials/MY_DB --secret-string "$(jq -n '.username=env.PGUSER | .password=env.PGPASSWORD')"
 
 * Configure your AWS command line credentials using
   `standard AWS conventions <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html>`_.
   You can verify that everything works correctly by running a test query via the AWS CLI::
 
       aws rds-data execute-statement --resource-arn RESOURCE_ARN --secret-arn SECRET_ARN --sql "select * from pg_catalog.pg_tables"
+
+  * When running deployed code (on an EC2 instance, ECS/EKS container, or Lambda), you can use the managed IAM policy
+    **AmazonRDSDataFullAccess** to grant your IAM role permissions to access the RDS Data API (while this policy is
+    convenient for testing, we recommend that you create your own scoped down least-privilege policy for production
+    applications).
 
 Usage
 -----
@@ -56,7 +62,7 @@ in the example below) are ignored.
     from sqlalchemy import create_engine
 
     cluster_arn = "arn:aws:rds:us-east-1:123456789012:cluster:my-aurora-serverless-cluster"
-    secret_arn = "arn:aws:secretsmanager:us-east-1:123456789012:secret:MY_DB_CREDENTIALS"
+    secret_arn = "arn:aws:secretsmanager:us-east-1:123456789012:secret:rds-db-credentials/MY_DB"
 
     engine = create_engine('postgresql+auroradataapi://:@/my_db_name',
                            echo=True,
