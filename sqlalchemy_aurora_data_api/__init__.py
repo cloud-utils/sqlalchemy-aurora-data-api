@@ -55,7 +55,16 @@ class _ADA_DATETIME_MIXIN:
             # and datetime.datetime.fromisoformat can't parse the result (example: '2019-10-31 09:37:17.31869'). Pad it.
             if isinstance(value, str) and self.iso_ts_re.match(value):
                 value = self.iso_ts_re.sub(lambda match: match.group(0).ljust(26, "0"), value)
-            return self.py_type.fromisoformat(value) if isinstance(value, str) else value
+            if isinstance(value, str):
+                try:
+                    return self.py_type.fromisoformat(value)
+                except AttributeError:  # fromisoformat not supported on Python < 3.7
+                    if self.py_type == datetime.date:
+                        return datetime.datetime.strptime(value, "%Y-%m-%d").date()
+                    if self.py_type == datetime.time:
+                        return datetime.datetime.strptime(value, "%H:%M:%S").time()
+                    return datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+            return value
         return process
 
 

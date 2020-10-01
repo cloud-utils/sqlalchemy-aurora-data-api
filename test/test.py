@@ -1,7 +1,8 @@
 import os, sys, json, unittest, logging, datetime, getpass, enum
 from uuid import uuid4
 
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric, Date, Text, Enum
+from sqlalchemy import (create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric, Date, Time,
+                        DateTime, Text, Enum)
 from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -102,12 +103,15 @@ class Socks(enum.Enum):
 
 
 class BasicUser(BasicBase):
-    __tablename__ = "sqlalchemy_aurora_data_api_test"
+    __tablename__ = "sqlalchemy_aurora_data_api_testC"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(64))
     fullname = Column(String(64))
     nickname = Column(String(64))
+    birthday = Column(Date)
+    eats_breakfast_at = Column(Time)
+    married_at = Column(DateTime)
 
 
 class User(Base):
@@ -228,7 +232,11 @@ class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
 
     def test_orm(self):
         BasicBase.metadata.create_all(self.engine)
-        ed_user = BasicUser(name='ed', fullname='Ed Jones', nickname='edsnickname')
+        birthday = datetime.datetime.fromtimestamp(0).date()
+        eats_breakfast_at = datetime.time(9, 0, 0, 123)
+        married_at = datetime.datetime(2020, 2, 20, 2, 20, 2, 200200)
+        ed_user = BasicUser(name='ed', fullname='Ed Jones', nickname='edsnickname',
+                            birthday=birthday, eats_breakfast_at=eats_breakfast_at, married_at=married_at)
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
@@ -241,6 +249,9 @@ class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
         self.assertGreater(session.query(BasicUser).filter(BasicUser.name.like('%ed')).count(), 0)
         u = session.query(BasicUser).filter(BasicUser.name.like('%ed')).first()
         self.assertEqual(u.nickname, "edsnickname")
+        self.assertEqual(u.birthday, birthday)
+        self.assertEqual(u.eats_breakfast_at, eats_breakfast_at.replace(microsecond=0))
+        self.assertEqual(u.married_at, married_at.replace(microsecond=0))
 
 
 if __name__ == "__main__":
