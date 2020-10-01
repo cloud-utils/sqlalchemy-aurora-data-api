@@ -35,7 +35,7 @@ Prerequisites
 
   * Here, RESOURCE_ARN refers to the Aurora RDS database ARN, which can be found in the
     `AWS RDS Console <https://console.aws.amazon.com/rds/home#databases:>`_ (click on your database, then "Configuration")
-    or in the CLI by running `aws rds describe-db-clusters`. SECRET_ARN refers to the AWS Secrets Manager secret
+    or in the CLI by running ``aws rds describe-db-clusters``. SECRET_ARN refers to the AWS Secrets Manager secret
     created above.
 
   * When running deployed code (on an EC2 instance, ECS/EKS container, or Lambda), you can use the managed IAM policy
