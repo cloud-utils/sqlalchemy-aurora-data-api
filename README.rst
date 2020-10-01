@@ -34,7 +34,7 @@ Prerequisites
       aws rds-data execute-statement --resource-arn RESOURCE_ARN --secret-arn SECRET_ARN --sql "select * from pg_catalog.pg_tables"
 
   * Here, RESOURCE_ARN refers to the Aurora RDS database ARN, which can be found in the
-    [AWS RDS Console](https://console.aws.amazon.com/rds/home#databases:) (click on your database, then "Configuration")
+    `AWS RDS Console <https://console.aws.amazon.com/rds/home#databases:>`_ (click on your database, then "Configuration")
     or in the CLI by running `aws rds describe-db-clusters`. SECRET_ARN refers to the AWS Secrets Manager secret
     created above.
 
