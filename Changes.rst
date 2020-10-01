@@ -1,3 +1,14 @@
+Changes for v0.2.1 (2020-10-01)
+===============================
+
+-  Fall back to strptime if fromisoformat is not available
+
+-  Merge pull request #8 from olinger/master (Add colspecs for mySQL
+   date, time and datetime types)
+
+-  Merge pull request #11 from romibuzi/master (Return error code
+   instead of enum entry)
+
 Changes for v0.2.0 (2020-01-02)
 ===============================
 
