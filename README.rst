@@ -33,6 +33,11 @@ Prerequisites
 
       aws rds-data execute-statement --resource-arn RESOURCE_ARN --secret-arn SECRET_ARN --sql "select * from pg_catalog.pg_tables"
 
+  * Here, RESOURCE_ARN refers to the Aurora RDS database ARN, which can be found in the
+    [AWS RDS Console](https://console.aws.amazon.com/rds/home#databases:) (click on your database, then "Configuration")
+    or in the CLI by running `aws rds describe-db-clusters`. SECRET_ARN refers to the AWS Secrets Manager secret
+    created above.
+
   * When running deployed code (on an EC2 instance, ECS/EKS container, or Lambda), you can use the managed IAM policy
     **AmazonRDSDataFullAccess** to grant your IAM role permissions to access the RDS Data API (while this policy is
     convenient for testing, we recommend that you create your own scoped down least-privilege policy for production
