@@ -12,6 +12,7 @@ from sqlalchemy.dialects.mysql.base import MySQLDialect
 
 import aurora_data_api
 
+
 class _ADA_SA_JSON(sqltypes.JSON):
     def bind_expression(self, value):
         return cast(value, sqltypes.JSON)
@@ -93,6 +94,7 @@ class _ADA_ARRAY(ARRAY):
     def bind_expression(self, value):
         return func.string_to_array(value, "\v")
 
+
 class AuroraMySQLDataAPIDialect(MySQLDialect):
     # See https://docs.sqlalchemy.org/en/13/core/internals.html#sqlalchemy.engine.interfaces.Dialect
     driver = "aurora_data_api"
@@ -129,6 +131,7 @@ class AuroraPostgresDataAPIDialect(PGDialect):
         sqltypes.Enum: _ADA_ENUM,
         ARRAY: _ADA_ARRAY
     })
+
     @classmethod
     def dbapi(cls):
         return aurora_data_api
