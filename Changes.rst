@@ -1,3 +1,10 @@
+Changes for v0.2.3 (2020-10-02)
+===============================
+
+-  Bump dependency version
+
+-  Fix strptime handling in Python 3.6 and earlier
+
 Changes for v0.2.2 (2020-10-02)
 ===============================
 
