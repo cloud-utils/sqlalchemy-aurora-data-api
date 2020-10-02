@@ -210,6 +210,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         u2 = session2.query(User).filter(User.name.like('%ed')).first()
         self.assertEqual(u2.socks, Socks.green)
 
+    @unittest.skipIf(sys.version_info < (3, 7), "Skipping test that requires Python 3.7+")
     def test_timestamp_microsecond_padding(self):
         ts = '2019-10-31 09:37:17.3186'
         processor = _ADA_TIMESTAMP.result_processor(_ADA_TIMESTAMP, None, None)

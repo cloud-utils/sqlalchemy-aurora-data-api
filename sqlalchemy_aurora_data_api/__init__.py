@@ -64,6 +64,8 @@ class _ADA_DATETIME_MIXIN:
                         return datetime.datetime.strptime(value, "%Y-%m-%d").date()
                     if self.py_type == datetime.time:
                         return datetime.datetime.strptime(value, "%H:%M:%S").time()
+                    if "." in value:
+                        return datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f")
                     return datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
             return value
         return process
