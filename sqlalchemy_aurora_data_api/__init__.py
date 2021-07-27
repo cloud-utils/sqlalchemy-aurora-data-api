@@ -101,6 +101,7 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
     # See https://docs.sqlalchemy.org/en/13/core/internals.html#sqlalchemy.engine.interfaces.Dialect
     driver = "aurora_data_api"
     default_schema_name = None
+    supports_native_decimal = True
     colspecs = util.update_copy(MySQLDialect.colspecs, {
         sqltypes.Date: _ADA_DATE,
         sqltypes.Time: _ADA_TIME,
