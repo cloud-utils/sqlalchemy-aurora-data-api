@@ -134,6 +134,7 @@ class AuroraPostgresDataAPIDialect(PGDialect):
         sqltypes.Enum: _ADA_ENUM,
         ARRAY: _ADA_ARRAY
     })
+    supports_sane_multi_rowcount = False
 
     @classmethod
     def dbapi(cls):
