@@ -75,16 +75,30 @@ class _ADA_DATE(_ADA_DATETIME_MIXIN, DATE):
     py_type = datetime.date
     sa_type = sqltypes.Date
 
+    def bind_processor(self, dialect):
+        def process(value):
+            return value.strftime("%Y-%m-%d") if isinstance(value, self.py_type) else value
+        return process
+
 
 class _ADA_TIME(_ADA_DATETIME_MIXIN, TIME):
     py_type = datetime.time
     sa_type = sqltypes.Time
+
+    def bind_processor(self, dialect):
+        def process(value):
+            return value.strftime("%H:%M:%S") if isinstance(value, self.py_type) else value
+        return process
 
 
 class _ADA_TIMESTAMP(_ADA_DATETIME_MIXIN, TIMESTAMP):
     py_type = datetime.datetime
     sa_type = sqltypes.DateTime
 
+    def bind_processor(self, dialect):
+        def process(value):
+            return value.strftime("%Y-%m-%d %H:%M:%S") if isinstance(value, self.py_type) else value
+        return process
 
 class _ADA_ARRAY(ARRAY):
     def bind_processor(self, dialect):
