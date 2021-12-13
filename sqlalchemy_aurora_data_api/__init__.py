@@ -154,6 +154,9 @@ class AuroraPostgresDataAPIDialect(PGDialect):
     def dbapi(cls):
         return aurora_data_api
 
+    def _extract_error_code(self, exception):
+        return exception.args[0].value
+
 
 def register_dialects():
     from sqlalchemy.dialects import registry
