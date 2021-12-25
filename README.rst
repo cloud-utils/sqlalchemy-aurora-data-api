@@ -24,7 +24,7 @@ Prerequisites
   `AWS Secrets Manager <https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html>`_ using a format
   expected by the Data API (a JSON object with the keys ``username`` and ``password``)::
 
-      aws secretsmanager create-secret --secret-id rds-db-credentials/MY_DB
+      aws secretsmanager create-secret --name rds-db-credentials/MY_DB
       aws secretsmanager put-secret-value --secret-id rds-db-credentials/MY_DB --secret-string "$(jq -n '.username=env.PGUSER | .password=env.PGPASSWORD')"
 
 * Configure your AWS command line credentials using

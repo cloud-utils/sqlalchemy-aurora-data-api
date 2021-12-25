@@ -100,6 +100,7 @@ class _ADA_TIMESTAMP(_ADA_DATETIME_MIXIN, TIMESTAMP):
             return value.strftime("%Y-%m-%d %H:%M:%S") if isinstance(value, self.py_type) else value
         return process
 
+
 class _ADA_ARRAY(ARRAY):
     def bind_processor(self, dialect):
         def process(value):
@@ -121,6 +122,7 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
         sqltypes.Time: _ADA_TIME,
         sqltypes.DateTime: _ADA_TIMESTAMP,
     })
+    supports_statement_cache = True
 
     @classmethod
     def dbapi(cls):
@@ -149,6 +151,7 @@ class AuroraPostgresDataAPIDialect(PGDialect):
         ARRAY: _ADA_ARRAY
     })
     supports_sane_multi_rowcount = False
+    supports_statement_cache = True
 
     @classmethod
     def dbapi(cls):
