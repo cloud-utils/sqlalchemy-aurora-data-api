@@ -1,3 +1,17 @@
+Changes for v0.3.0 (2021-12-25)
+===============================
+
+-  Add supports_statement_cache flag. Fixes #29
+
+-  Add error code extraction (#31)
+
+-  Format with DataAPI supported format for dates (#24)
+
+-  Set supports_sane_multi_rowcount = False on
+   AuroraPostgresDataAPIDialect (#28)
+
+-  Tell SQLAlchemy: mysql supports native decimal (fixes #25) (#26)
+
 Changes for v0.2.7 (2020-12-12)
 ===============================
 
