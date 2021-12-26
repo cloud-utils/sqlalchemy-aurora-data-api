@@ -7,9 +7,9 @@ from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIME, TIMESTAMP, A
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))  # noqa
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from sqlalchemy_aurora_data_api import register_dialects, _ADA_TIMESTAMP
+from sqlalchemy_aurora_data_api import register_dialects, _ADA_TIMESTAMP  # noqa
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("aurora_data_api").setLevel(logging.DEBUG)
@@ -86,7 +86,7 @@ dialect_interface_methods = {
     "initialize",
     "is_disconnect",
     "normalize_name",
-    "reflecttable",
+    # "reflect_table",
     "reset_isolation_level",
     "set_isolation_level",
     "type_descriptor"
@@ -103,7 +103,7 @@ class Socks(enum.Enum):
 
 
 class BasicUser(BasicBase):
-    __tablename__ = "sqlalchemy_aurora_data_api_testC"
+    __tablename__ = "sqlalchemy_aurora_data_api_testD"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(64))
@@ -115,7 +115,7 @@ class BasicUser(BasicBase):
 
 
 class User(Base):
-    __tablename__ = "sqlalchemy_aurora_data_api_testL"
+    __tablename__ = "sqlalchemy_aurora_data_api_testM"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -123,7 +123,7 @@ class User(Base):
     nickname = Column(String)
     doc = Column(JSONB)
     uuid = Column(UUID)
-    woke = Column(Boolean, nullable=True)
+    flag = Column(Boolean, nullable=True)
     nonesuch = Column(Boolean, nullable=True)
     birthday = Column(DATE)
     wakes_up_at = Column(TIME)
@@ -174,7 +174,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         friends = ["Scarlett O'Hara", 'Ada "Hacker" Lovelace']
         Base.metadata.create_all(self.engine)
         added = datetime.datetime.now()
-        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), woke=True,
+        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), flag=True,
                        birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
                        friends=friends, num_friends=500, num_laptops=9000, first_date=added, note='note',
                        socks=Socks.red)
@@ -190,10 +190,10 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         self.assertGreater(session.query(User).filter(User.name.like('%ed')).count(), 0)
         u = session.query(User).filter(User.name.like('%ed')).first()
         self.assertEqual(u.doc, doc)
-        self.assertEqual(u.woke, True)
+        self.assertEqual(u.flag, True)
         self.assertEqual(u.nonesuch, None)
         self.assertEqual(u.birthday, datetime.date.fromtimestamp(0))
-        self.assertEqual(u.added, added)
+        self.assertEqual(u.added, added.replace(microsecond=0))
         self.assertEqual(u.floated, 1.2)
         self.assertEqual(u.nybbled, blob)
         self.assertEqual(u.friends, friends)
@@ -250,7 +250,7 @@ class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
         self.assertGreater(session.query(BasicUser).filter(BasicUser.name.like('%ed')).count(), 0)
         u = session.query(BasicUser).filter(BasicUser.name.like('%ed')).first()
         self.assertEqual(u.nickname, "edsnickname")
-        self.assertEqual(u.birthday, birthday)
+        self.assertEqual(u.birthday, birthday.replace(microsecond=0))
         self.assertEqual(u.eats_breakfast_at, eats_breakfast_at.replace(microsecond=0))
         self.assertEqual(u.married_at, married_at.replace(microsecond=0))
 
