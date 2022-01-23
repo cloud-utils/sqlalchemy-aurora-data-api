@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from sqlalchemy import (create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric, Date, Time,
                         DateTime, Text, Enum)
-from sqlalchemy.dialects.postgresql import UUID, JSONB, DATE, TIME, TIMESTAMP, ARRAY
+from sqlalchemy.dialects.postgresql import UUID, JSONB, JSON, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -103,7 +103,7 @@ class Socks(enum.Enum):
 
 
 class BasicUser(BasicBase):
-    __tablename__ = "sqlalchemy_aurora_data_api_testD"
+    __tablename__ = "sqlalchemy_aurora_data_api_testC"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(64))
@@ -115,13 +115,14 @@ class BasicUser(BasicBase):
 
 
 class User(Base):
-    __tablename__ = "sqlalchemy_aurora_data_api_testM"
+    __tablename__ = "sqlalchemy_aurora_data_api_testD"
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
     fullname = Column(String)
     nickname = Column(String)
     doc = Column(JSONB)
+    doc2 = Column(JSON)
     uuid = Column(UUID)
     flag = Column(Boolean, nullable=True)
     nonesuch = Column(Boolean, nullable=True)
@@ -174,8 +175,8 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         friends = ["Scarlett O'Hara", 'Ada "Hacker" Lovelace']
         Base.metadata.create_all(self.engine)
         added = datetime.datetime.now()
-        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, uuid=str(uuid), flag=True,
-                       birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
+        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, doc2=doc, uuid=str(uuid),
+                       flag=True, birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
                        friends=friends, num_friends=500, num_laptops=9000, first_date=added, note='note',
                        socks=Socks.red)
         Session = sessionmaker(bind=self.engine)
@@ -190,6 +191,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         self.assertGreater(session.query(User).filter(User.name.like('%ed')).count(), 0)
         u = session.query(User).filter(User.name.like('%ed')).first()
         self.assertEqual(u.doc, doc)
+        self.assertEqual(u.doc2, doc)
         self.assertEqual(u.flag, True)
         self.assertEqual(u.nonesuch, None)
         self.assertEqual(u.birthday, datetime.date.fromtimestamp(0))
