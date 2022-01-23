@@ -1,8 +1,7 @@
 SHELL=/bin/bash
 
 lint:
-	./setup.py flake8
-	flake8 scripts/*
+	flake8
 
 test: lint
 	python ./test/test.py -v
@@ -15,7 +14,7 @@ docs:
 
 install:
 	-rm -rf dist
-	python setup.py bdist_wheel
+	python -m build
 	pip install --upgrade dist/*.whl
 
 .PHONY: test release docs
