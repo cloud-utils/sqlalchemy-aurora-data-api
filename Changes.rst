@@ -1,3 +1,8 @@
+Changes for v0.3.2 (2022-01-23)
+===============================
+
+-  Bump dependency to incorporate fix; add regression test
+
 Changes for v0.3.1 (2021-12-25)
 ===============================
 
