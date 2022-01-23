@@ -8,12 +8,12 @@ setup(
     url='https://github.com/chanzuckerberg/sqlalchemy-aurora-data-api',
     license='Apache Software License',
     author='Andrey Kislyuk',
-    author_email='akislyuk@chanzuckerberg.com',
+    author_email='kislyuk@gmail.com',
     description='An AWS Aurora Serverless Data API dialect for SQLAlchemy',
     long_description=open('README.rst').read(),
     install_requires=[
         'sqlalchemy',
-        'aurora-data-api >= 0.3.0'
+        'aurora-data-api >= 0.3.1'
     ],
     extras_require={
     },
