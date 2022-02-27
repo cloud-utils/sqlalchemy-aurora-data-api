@@ -1,5 +1,5 @@
 import os, sys, json, unittest, logging, datetime, getpass, enum
-from uuid import uuid4
+from uuid import UUID as uuid_type, uuid4
 
 from sqlalchemy import (create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric, Date, Time,
                         DateTime, Text, Enum)
@@ -103,7 +103,7 @@ class Socks(enum.Enum):
 
 
 class BasicUser(BasicBase):
-    __tablename__ = "sqlalchemy_aurora_data_api_testC"
+    __tablename__ = "sqlalchemy_aurora_data_api_testI"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(64))
@@ -115,8 +115,7 @@ class BasicUser(BasicBase):
 
 
 class User(Base):
-    __tablename__ = "sqlalchemy_aurora_data_api_testD"
-
+    __tablename__ = "sqlalchemy_aurora_data_api_testJ"
     id = Column(Integer, primary_key=True)
     name = Column(String)
     fullname = Column(String)
@@ -124,6 +123,7 @@ class User(Base):
     doc = Column(JSONB)
     doc2 = Column(JSON)
     uuid = Column(UUID)
+    uuid2 = Column(UUID(as_uuid=True), default=uuid4)
     flag = Column(Boolean, nullable=True)
     nonesuch = Column(Boolean, nullable=True)
     birthday = Column(DATE)
@@ -204,6 +204,8 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         self.assertEqual(u.first_date, added.date())
         self.assertEqual(u.note, 'note')
         self.assertEqual(u.socks, Socks.red)
+        self.assertEqual(u.uuid, str(uuid))
+        self.assertIsInstance(u.uuid2, uuid_type)
 
         u.socks = Socks.green
         session.commit()
@@ -252,7 +254,7 @@ class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
         self.assertGreater(session.query(BasicUser).filter(BasicUser.name.like('%ed')).count(), 0)
         u = session.query(BasicUser).filter(BasicUser.name.like('%ed')).first()
         self.assertEqual(u.nickname, "edsnickname")
-        self.assertEqual(u.birthday, birthday.replace(microsecond=0))
+        self.assertEqual(u.birthday, birthday)
         self.assertEqual(u.eats_breakfast_at, eats_breakfast_at.replace(microsecond=0))
         self.assertEqual(u.married_at, married_at.replace(microsecond=0))
 
