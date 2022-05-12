@@ -42,6 +42,11 @@ class _ADA_ENUM(ENUM):
 class _ADA_DATETIME_MIXIN:
     iso_ts_re = re.compile(r"\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.\d+")
 
+    @staticmethod
+    def ms(value):
+        # Three digit fractional second component, truncated and zero padded. This is what the data api requires.
+        return str(value.microsecond).zfill(6)[:-3]
+
     def bind_processor(self, dialect):
         def process(value):
             return value.isoformat() if isinstance(value, self.py_type) else value
@@ -53,7 +58,8 @@ class _ADA_DATETIME_MIXIN:
     def result_processor(self, dialect, coltype):
         def process(value):
             # When the microsecond component ends in zeros, they are omitted from the return value,
-            # and datetime.datetime.fromisoformat can't parse the result (example: '2019-10-31 09:37:17.31869'). Pad it.
+            # and datetime.datetime.fromisoformat can't parse the result (example: '2019-10-31 09:37:17.31869
+            # '). Pad it.
             if isinstance(value, str) and self.iso_ts_re.match(value):
                 value = self.iso_ts_re.sub(lambda match: match.group(0).ljust(26, "0"), value)
             if isinstance(value, str):
@@ -87,7 +93,7 @@ class _ADA_TIME(_ADA_DATETIME_MIXIN, TIME):
 
     def bind_processor(self, dialect):
         def process(value):
-            return value.strftime("%H:%M:%S") if isinstance(value, self.py_type) else value
+            return value.strftime("%H:%M:%S.") + self.ms(value) if isinstance(value, self.py_type) else value
         return process
 
 
@@ -97,7 +103,7 @@ class _ADA_TIMESTAMP(_ADA_DATETIME_MIXIN, TIMESTAMP):
 
     def bind_processor(self, dialect):
         def process(value):
-            return value.strftime("%Y-%m-%d %H:%M:%S") if isinstance(value, self.py_type) else value
+            return value.strftime("%Y-%m-%d %H:%M:%S.") + self.ms(value) if isinstance(value, self.py_type) else value
         return process
 
 
