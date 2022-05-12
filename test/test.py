@@ -140,14 +140,6 @@ class User(Base):
 
 
 class TestAuroraDataAPI(unittest.TestCase):
-    dialect = "postgresql+auroradataapi://"
-
-    @classmethod
-    def setUpClass(cls):
-        register_dialects()
-        cls.db_name = os.environ.get("AURORA_DB_NAME", __name__)
-        cls.engine = create_engine(cls.dialect + ':@/' + cls.db_name)
-
     @classmethod
     def tearDownClass(cls):
         pass
