@@ -256,7 +256,7 @@ class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
         self.assertEqual(u.nickname, "edsnickname")
         self.assertEqual(u.birthday, birthday)
         self.assertEqual(u.eats_breakfast_at, eats_breakfast_at.replace(microsecond=0))
-        self.assertEqual(u.married_at, married_at.replace(microsecond=200000))
+        self.assertEqual(u.married_at, married_at.replace(microsecond=0))
 
 
 if __name__ == "__main__":
