@@ -174,7 +174,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         blob = b"0123456789ABCDEF" * 1024
         friends = ["Scarlett O'Hara", 'Ada "Hacker" Lovelace']
         Base.metadata.create_all(self.engine)
-        added = datetime.datetime.now()
+        added = datetime.datetime.now().replace(microsecond=123456)
         ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, doc2=doc, uuid=str(uuid),
                        flag=True, birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
                        friends=friends, num_friends=500, num_laptops=9000, first_date=added, note='note',
@@ -195,7 +195,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         self.assertEqual(u.flag, True)
         self.assertEqual(u.nonesuch, None)
         self.assertEqual(u.birthday, datetime.date.fromtimestamp(0))
-        self.assertEqual(u.added, added.replace(microsecond=0))
+        self.assertEqual(u.added, added.replace(microsecond=123000))
         self.assertEqual(u.floated, 1.2)
         self.assertEqual(u.nybbled, blob)
         self.assertEqual(u.friends, friends)
