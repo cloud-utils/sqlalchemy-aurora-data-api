@@ -1,3 +1,9 @@
+Changes for v0.4.1 (2022-05-18)
+===============================
+
+-  Support for fractional seconds when binding time and datetime data
+   types (#40)
+
 Changes for v0.4.0 (2022-02-27)
 ===============================
 
