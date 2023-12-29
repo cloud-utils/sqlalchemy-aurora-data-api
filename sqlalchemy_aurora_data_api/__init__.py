@@ -50,6 +50,7 @@ class _ADA_DATETIME_MIXIN:
     def bind_processor(self, dialect):
         def process(value):
             return value.isoformat() if isinstance(value, self.py_type) else value
+
         return process
 
     def bind_expression(self, value):
@@ -74,6 +75,7 @@ class _ADA_DATETIME_MIXIN:
                         return datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f")
                     return datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
             return value
+
         return process
 
 
@@ -84,6 +86,7 @@ class _ADA_DATE(_ADA_DATETIME_MIXIN, DATE):
     def bind_processor(self, dialect):
         def process(value):
             return value.strftime("%Y-%m-%d") if isinstance(value, self.py_type) else value
+
         return process
 
 
@@ -94,6 +97,7 @@ class _ADA_TIME(_ADA_DATETIME_MIXIN, TIME):
     def bind_processor(self, dialect):
         def process(value):
             return value.strftime("%H:%M:%S.") + self.ms(value) if isinstance(value, self.py_type) else value
+
         return process
 
 
@@ -104,6 +108,7 @@ class _ADA_TIMESTAMP(_ADA_DATETIME_MIXIN, TIMESTAMP):
     def bind_processor(self, dialect):
         def process(value):
             return value.strftime("%Y-%m-%d %H:%M:%S.") + self.ms(value) if isinstance(value, self.py_type) else value
+
         return process
 
 
@@ -112,6 +117,7 @@ class _ADA_ARRAY(ARRAY):
         def process(value):
             # FIXME: escape strings properly here
             return "\v".join(value) if isinstance(value, list) else value
+
         return process
 
     def bind_expression(self, value):
@@ -123,11 +129,14 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
     driver = "aurora_data_api"
     default_schema_name = None
     supports_native_decimal = True
-    colspecs = util.update_copy(MySQLDialect.colspecs, {
-        sqltypes.Date: _ADA_DATE,
-        sqltypes.Time: _ADA_TIME,
-        sqltypes.DateTime: _ADA_TIMESTAMP,
-    })
+    colspecs = util.update_copy(
+        MySQLDialect.colspecs,
+        {
+            sqltypes.Date: _ADA_DATE,
+            sqltypes.Time: _ADA_TIME,
+            sqltypes.DateTime: _ADA_TIMESTAMP,
+        },
+    )
     supports_statement_cache = True
 
     @classmethod
@@ -145,17 +154,20 @@ class AuroraPostgresDataAPIDialect(PGDialect):
     # See https://docs.sqlalchemy.org/en/13/core/internals.html#sqlalchemy.engine.interfaces.Dialect
     driver = "aurora_data_api"
     default_schema_name = None
-    colspecs = util.update_copy(PGDialect.colspecs, {
-        sqltypes.JSON: _ADA_SA_JSON,
-        JSON: _ADA_JSON,
-        JSONB: _ADA_JSONB,
-        UUID: _ADA_UUID,
-        sqltypes.Date: _ADA_DATE,
-        sqltypes.Time: _ADA_TIME,
-        sqltypes.DateTime: _ADA_TIMESTAMP,
-        sqltypes.Enum: _ADA_ENUM,
-        ARRAY: _ADA_ARRAY
-    })
+    colspecs = util.update_copy(
+        PGDialect.colspecs,
+        {
+            sqltypes.JSON: _ADA_SA_JSON,
+            JSON: _ADA_JSON,
+            JSONB: _ADA_JSONB,
+            UUID: _ADA_UUID,
+            sqltypes.Date: _ADA_DATE,
+            sqltypes.Time: _ADA_TIME,
+            sqltypes.DateTime: _ADA_TIMESTAMP,
+            sqltypes.Enum: _ADA_ENUM,
+            ARRAY: _ADA_ARRAY,
+        },
+    )
     supports_sane_multi_rowcount = False
     supports_statement_cache = True
 
@@ -169,5 +181,6 @@ class AuroraPostgresDataAPIDialect(PGDialect):
 
 def register_dialects():
     from sqlalchemy.dialects import registry
+
     registry.register("mysql.auroradataapi", __name__, AuroraMySQLDataAPIDialect.__name__)
     registry.register("postgresql.auroradataapi", __name__, AuroraPostgresDataAPIDialect.__name__)

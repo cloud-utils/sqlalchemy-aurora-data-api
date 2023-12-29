@@ -6,8 +6,21 @@ import datetime
 import enum
 from uuid import UUID as uuid_type, uuid4
 
-from sqlalchemy import (create_engine, Column, Integer, String, Boolean, Float, LargeBinary, Numeric, Date, Time,
-                        DateTime, Text, Enum)
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    Boolean,
+    Float,
+    LargeBinary,
+    Numeric,
+    Date,
+    Time,
+    DateTime,
+    Text,
+    Enum,
+)
 from sqlalchemy.dialects.postgresql import UUID, JSONB, JSON, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -48,7 +61,7 @@ dialect_interface_attributes = {
     "sequences_optional",
     "supports_native_enum",
     "supports_native_boolean",
-    "dbapi_exception_translation_map"
+    "dbapi_exception_translation_map",
 }
 
 dialect_interface_methods = {
@@ -94,7 +107,7 @@ dialect_interface_methods = {
     # "reflect_table",
     "reset_isolation_level",
     "set_isolation_level",
-    "type_descriptor"
+    "type_descriptor",
 }
 
 BasicBase = declarative_base()
@@ -166,7 +179,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
     def setUpClass(cls):
         register_dialects()
         cls.db_name = os.environ.get("AURORA_DB_NAME", __name__)
-        cls.engine = create_engine(cls.dialect + ':@/' + cls.db_name)
+        cls.engine = create_engine(cls.dialect + ":@/" + cls.db_name)
 
     def test_execute(self):
         with self.engine.connect() as conn:
@@ -175,15 +188,30 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
 
     def test_orm(self):
         uuid = uuid4()
-        doc = {'foo': [1, 2, 3]}
+        doc = {"foo": [1, 2, 3]}
         blob = b"0123456789ABCDEF" * 1024
         friends = ["Scarlett O'Hara", 'Ada "Hacker" Lovelace']
         Base.metadata.create_all(self.engine)
         added = datetime.datetime.now().replace(microsecond=123456)
-        ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname', doc=doc, doc2=doc, uuid=str(uuid),
-                       flag=True, birthday=datetime.datetime.fromtimestamp(0), added=added, floated=1.2, nybbled=blob,
-                       friends=friends, num_friends=500, num_laptops=9000, first_date=added, note='note',
-                       socks=Socks.red)
+        ed_user = User(
+            name="ed",
+            fullname="Ed Jones",
+            nickname="edsnickname",
+            doc=doc,
+            doc2=doc,
+            uuid=str(uuid),
+            flag=True,
+            birthday=datetime.datetime.fromtimestamp(0),
+            added=added,
+            floated=1.2,
+            nybbled=blob,
+            friends=friends,
+            num_friends=500,
+            num_laptops=9000,
+            first_date=added,
+            note="note",
+            socks=Socks.red,
+        )
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
@@ -191,10 +219,10 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         session.commit()
 
         session.add(ed_user)
-        self.assertEqual(session.query(User).filter_by(name='ed').first().name, "ed")
+        self.assertEqual(session.query(User).filter_by(name="ed").first().name, "ed")
         session.commit()
-        self.assertGreater(session.query(User).filter(User.name.like('%ed')).count(), 0)
-        u = session.query(User).filter(User.name.like('%ed')).first()
+        self.assertGreater(session.query(User).filter(User.name.like("%ed")).count(), 0)
+        u = session.query(User).filter(User.name.like("%ed")).first()
         self.assertEqual(u.doc, doc)
         self.assertEqual(u.doc2, doc)
         self.assertEqual(u.flag, True)
@@ -207,7 +235,7 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         self.assertEqual(u.num_friends, 500)
         self.assertEqual(u.num_laptops, 9000)
         self.assertEqual(u.first_date, added.date())
-        self.assertEqual(u.note, 'note')
+        self.assertEqual(u.note, "note")
         self.assertEqual(u.socks, Socks.red)
         self.assertEqual(u.uuid, str(uuid))
         self.assertIsInstance(u.uuid2, uuid_type)
@@ -216,12 +244,12 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         session.commit()
 
         session2 = Session()
-        u2 = session2.query(User).filter(User.name.like('%ed')).first()
+        u2 = session2.query(User).filter(User.name.like("%ed")).first()
         self.assertEqual(u2.socks, Socks.green)
 
     @unittest.skipIf(sys.version_info < (3, 7), "Skipping test that requires Python 3.7+")
     def test_timestamp_microsecond_padding(self):
-        ts = '2019-10-31 09:37:17.3186'
+        ts = "2019-10-31 09:37:17.3186"
         processor = _ADA_TIMESTAMP.result_processor(_ADA_TIMESTAMP, None, None)
         self.assertEqual(processor(ts), datetime.datetime.fromisoformat(ts.ljust(26, "0")))
 
@@ -233,7 +261,7 @@ class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
     def setUpClass(cls):
         register_dialects()
         cls.db_name = os.environ.get("AURORA_DB_NAME", __name__)
-        cls.engine = create_engine(cls.dialect + ':@/' + cls.db_name + "?charset=utf8mb4")
+        cls.engine = create_engine(cls.dialect + ":@/" + cls.db_name + "?charset=utf8mb4")
 
     def test_execute(self):
         with self.engine.connect() as conn:
@@ -245,8 +273,14 @@ class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
         birthday = datetime.datetime.fromtimestamp(0).date()
         eats_breakfast_at = datetime.time(9, 0, 0, 123)
         married_at = datetime.datetime(2020, 2, 20, 2, 20, 2, 200200)
-        ed_user = BasicUser(name='ed', fullname='Ed Jones', nickname='edsnickname',
-                            birthday=birthday, eats_breakfast_at=eats_breakfast_at, married_at=married_at)
+        ed_user = BasicUser(
+            name="ed",
+            fullname="Ed Jones",
+            nickname="edsnickname",
+            birthday=birthday,
+            eats_breakfast_at=eats_breakfast_at,
+            married_at=married_at,
+        )
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
@@ -254,10 +288,10 @@ class TestAuroraDataAPIMySQLDialect(TestAuroraDataAPI):
         session.commit()
 
         session.add(ed_user)
-        self.assertEqual(session.query(BasicUser).filter_by(name='ed').first().name, "ed")
+        self.assertEqual(session.query(BasicUser).filter_by(name="ed").first().name, "ed")
         session.commit()
-        self.assertGreater(session.query(BasicUser).filter(BasicUser.name.like('%ed')).count(), 0)
-        u = session.query(BasicUser).filter(BasicUser.name.like('%ed')).first()
+        self.assertGreater(session.query(BasicUser).filter(BasicUser.name.like("%ed")).count(), 0)
+        u = session.query(BasicUser).filter(BasicUser.name.like("%ed")).first()
         self.assertEqual(u.nickname, "edsnickname")
         self.assertEqual(u.birthday, birthday)
         self.assertEqual(u.eats_breakfast_at, eats_breakfast_at.replace(microsecond=0))
