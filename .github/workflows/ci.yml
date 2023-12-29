@@ -1,0 +1,11 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  ruff:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: chartboost/ruff-action@v1
+        with:
+          version: 0.1.9
