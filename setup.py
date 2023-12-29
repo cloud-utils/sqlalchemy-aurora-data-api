@@ -11,7 +11,7 @@ setup(
     author_email="kislyuk@gmail.com",
     description="An AWS Aurora Serverless Data API dialect for SQLAlchemy",
     long_description=open("README.rst").read(),
-    install_requires=["sqlalchemy", "aurora-data-api >= 0.4.0"],
+    install_requires=["sqlalchemy", "aurora-data-api >= 0.5.0"],
     extras_require={},
     packages=find_packages(exclude=["test"]),
     entry_points={
@@ -28,10 +28,11 @@ setup(
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
 )
