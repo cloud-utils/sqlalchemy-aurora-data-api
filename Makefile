@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 
 lint:
-	flake8
+	ruff .
 
 test: lint
 	python ./test/test.py -v
