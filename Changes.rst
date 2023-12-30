@@ -1,3 +1,10 @@
+Changes for v0.5.0 (2023-12-29)
+===============================
+
+-  Update dependencies
+
+-  Test and release infrastructure improvements
+
 Changes for v0.4.1 (2022-05-18)
 ===============================
 

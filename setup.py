@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sqlalchemy-aurora-data-api",
-    version="0.4.1",
+    version="0.5.0",
     url="https://github.com/chanzuckerberg/sqlalchemy-aurora-data-api",
     license="Apache Software License",
     author="Andrey Kislyuk",
