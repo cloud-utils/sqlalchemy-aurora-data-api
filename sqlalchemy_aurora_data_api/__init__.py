@@ -140,7 +140,7 @@ class AuroraMySQLDataAPIDialect(MySQLDialect):
     supports_statement_cache = True
 
     @classmethod
-    def dbapi(cls):
+    def import_dbapi(cls):
         return aurora_data_api
 
     def _detect_charset(self, connection):
@@ -172,7 +172,7 @@ class AuroraPostgresDataAPIDialect(PGDialect):
     supports_statement_cache = True
 
     @classmethod
-    def dbapi(cls):
+    def import_dbapi(cls):
         return aurora_data_api
 
     def _extract_error_code(self, exception):
