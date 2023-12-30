@@ -19,7 +19,7 @@ from sqlalchemy import (
     Time,
     DateTime,
     Text,
-    Enum,
+    # Enum,
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB, JSON, DATE, TIME, TIMESTAMP, ARRAY
 from sqlalchemy.orm import sessionmaker, declarative_base
@@ -236,18 +236,17 @@ class TestAuroraDataAPIPostgresDialect(TestAuroraDataAPI):
         self.assertEqual(u.num_laptops, 9000)
         self.assertEqual(u.first_date, added.date())
         self.assertEqual(u.note, "note")
-        # FIXME: re-enable test for enums support
-        # self.assertEqual(u.socks, Socks.red)
+        print("FIXME: re-enable test for enums support", self.assertEqual, "u.socks", Socks.red)
         self.assertEqual(u.uuid, str(uuid))
-        # FIXME: re-enable test for uuid support
-        # self.assertIsInstance(u.uuid2, uuid_type)
+        print("FIXME: re-enable test for uuid support", self.assertIsInstance, u.uuid2, uuid_type)
 
         # u.socks = Socks.green
         session.commit()
 
         session2 = Session()
-        u2 = session2.query(User).filter(User.name.like("%ed")).first()
-        # self.assertEqual(u2.socks, Socks.green)
+        # u2 =
+        session2.query(User).filter(User.name.like("%ed")).first()
+        print("FIXME: re-enable test for enums support", self.assertEqual, "u2.socks", Socks.green)
 
     @unittest.skipIf(sys.version_info < (3, 7), "Skipping test that requires Python 3.7+")
     def test_timestamp_microsecond_padding(self):
