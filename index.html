@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>sqlalchemy-aurora-data-api - An AWS Aurora Serverless Data API dialect for SQLAlchemy &#8212; sqlalchemy-aurora-data-api  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/guzzle.css?v=ee5bbeb1" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">sqlalchemy-aurora-data-api  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">sqlalchemy-aurora-data-api - An AWS Aurora Serverless Data API dialect for SQLAlchemy</a></li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    #" class="text-logo">sqlalchemy-aurora-data-api</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Contents</h2>
+    <div class="sidebar-localtoc">
+      <ul>
+<li><a class="reference internal" href="#">sqlalchemy-aurora-data-api - An AWS Aurora Serverless Data API dialect for SQLAlchemy</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#motivation">Motivation</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#links">Links</a><ul>
+<li><a class="reference internal" href="#bugs">Bugs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api-documentation">API documentation</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="#">Docs</a></li>
+              
+              <li>sqlalchemy-aurora-data-api - An AWS Aurora Serverless Data API dialect for SQLAlchemy</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <section id="sqlalchemy-aurora-data-api-an-aws-aurora-serverless-data-api-dialect-for-sqlalchemy">
+<h1>sqlalchemy-aurora-data-api - An AWS Aurora Serverless Data API dialect for SQLAlchemy<a class="headerlink" href="#sqlalchemy-aurora-data-api-an-aws-aurora-serverless-data-api-dialect-for-sqlalchemy" title="Link to this heading">¶</a></h1>
+<p>This package provides a <a class="reference external" href="https://www.sqlalchemy.org">SQLAlchemy</a>
+<a class="reference external" href="https://docs.sqlalchemy.org/en/13/dialects/">dialect</a> for accessing PostgreSQL and MySQL databases via the
+<a class="reference external" href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html">AWS Aurora Data API</a>.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">sqlalchemy</span><span class="o">-</span><span class="n">aurora</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">api</span>
+</pre></div>
+</div>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>Set up an
+<a class="reference external" href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html">AWS Aurora Serverless cluster</a>
+and enable Data API access for it. If you have previously set up an Aurora Serverless cluster, you can enable Data API
+with the following <a class="reference external" href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html">AWS CLI</a> command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">rds</span> <span class="n">modify</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">cluster</span> <span class="o">--</span><span class="n">db</span><span class="o">-</span><span class="n">cluster</span><span class="o">-</span><span class="n">identifier</span> <span class="n">DB_CLUSTER_NAME</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">http</span><span class="o">-</span><span class="n">endpoint</span> <span class="o">--</span><span class="n">apply</span><span class="o">-</span><span class="n">immediately</span>
+</pre></div>
+</div>
+</li>
+<li><p>Save the database credentials in
+<a class="reference external" href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html">AWS Secrets Manager</a> using a format
+expected by the Data API (a JSON object with the keys <code class="docutils literal notranslate"><span class="pre">username</span></code> and <code class="docutils literal notranslate"><span class="pre">password</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">secretsmanager</span> <span class="n">create</span><span class="o">-</span><span class="n">secret</span> <span class="o">--</span><span class="n">name</span> <span class="n">rds</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">credentials</span><span class="o">/</span><span class="n">MY_DB</span>
+<span class="n">aws</span> <span class="n">secretsmanager</span> <span class="n">put</span><span class="o">-</span><span class="n">secret</span><span class="o">-</span><span class="n">value</span> <span class="o">--</span><span class="n">secret</span><span class="o">-</span><span class="nb">id</span> <span class="n">rds</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">credentials</span><span class="o">/</span><span class="n">MY_DB</span> <span class="o">--</span><span class="n">secret</span><span class="o">-</span><span class="n">string</span> <span class="s2">&quot;$(jq -n &#39;.username=env.PGUSER | .password=env.PGPASSWORD&#39;)&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Configure your AWS command line credentials using
+<a class="reference external" href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html">standard AWS conventions</a>.
+You can verify that everything works correctly by running a test query via the AWS CLI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">rds</span><span class="o">-</span><span class="n">data</span> <span class="n">execute</span><span class="o">-</span><span class="n">statement</span> <span class="o">--</span><span class="n">resource</span><span class="o">-</span><span class="n">arn</span> <span class="n">RESOURCE_ARN</span> <span class="o">--</span><span class="n">secret</span><span class="o">-</span><span class="n">arn</span> <span class="n">SECRET_ARN</span> <span class="o">--</span><span class="n">sql</span> <span class="s2">&quot;select * from pg_catalog.pg_tables&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here, RESOURCE_ARN refers to the Aurora RDS database ARN, which can be found in the
+<a class="reference external" href="https://console.aws.amazon.com/rds/home#databases:">AWS RDS Console</a> (click on your database, then “Configuration”)
+or in the CLI by running <code class="docutils literal notranslate"><span class="pre">aws</span> <span class="pre">rds</span> <span class="pre">describe-db-clusters</span></code>. SECRET_ARN refers to the AWS Secrets Manager secret
+created above.</p></li>
+<li><p>When running deployed code (on an EC2 instance, ECS/EKS container, or Lambda), you can use the managed IAM policy
+<strong>AmazonRDSDataFullAccess</strong> to grant your IAM role permissions to access the RDS Data API (while this policy is
+convenient for testing, we recommend that you create your own scoped down least-privilege policy for production
+applications).</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<p>The package registers two SQLAlchemy dialects, <code class="docutils literal notranslate"><span class="pre">mysql+auroradataapi://</span></code> and <code class="docutils literal notranslate"><span class="pre">postgresql+auroradataapi://</span></code>. Two
+<code class="docutils literal notranslate"><span class="pre">sqlalchemy.create_engine()</span></code> <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/engines.html#custom-dbapi-args">connect_args</a>
+keyword arguments are required to connect to the database:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">aurora_cluster_arn</span></code> (also referred to as <code class="docutils literal notranslate"><span class="pre">resourceArn</span></code> in the
+<a class="reference external" href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/rds-data.html">Data API documentation</a>)</p>
+<ul>
+<li><p>If not given as a keyword argument, this can also be specified using the <code class="docutils literal notranslate"><span class="pre">AURORA_CLUSTER_ARN</span></code> environment variable</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">secret_arn</span></code> (the database credentials secret)</p>
+<ul>
+<li><p>If not given as a keyword argument, this can also be specified using the <code class="docutils literal notranslate"><span class="pre">AURORA_SECRET_ARN</span></code> environment variable</p></li>
+</ul>
+</li>
+</ul>
+<p>All connection string contents other than the protocol (dialect) and the database name (path component, <code class="docutils literal notranslate"><span class="pre">my_db_name</span></code>
+in the example below) are ignored.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+
+<span class="n">cluster_arn</span> <span class="o">=</span> <span class="s2">&quot;arn:aws:rds:us-east-1:123456789012:cluster:my-aurora-serverless-cluster&quot;</span>
+<span class="n">secret_arn</span> <span class="o">=</span> <span class="s2">&quot;arn:aws:secretsmanager:us-east-1:123456789012:secret:rds-db-credentials/MY_DB&quot;</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s1">&#39;postgresql+auroradataapi://:@/my_db_name&#39;</span><span class="p">,</span>
+                       <span class="n">echo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                       <span class="n">connect_args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">aurora_cluster_arn</span><span class="o">=</span><span class="n">cluster_arn</span><span class="p">,</span> <span class="n">secret_arn</span><span class="o">=</span><span class="n">secret_arn</span><span class="p">))</span>
+
+<span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select * from pg_catalog.pg_tables&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference external" href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html">RDS Data API</a> is the link between the
+AWS Lambda serverless environment and the sophisticated features provided by PostgreSQL and MySQL. The Data API tunnels
+SQL over HTTP, which has advantages in the context of AWS Lambda:</p>
+<ul class="simple">
+<li><p>It eliminates the need to open database ports to the AWS Lambda public IP address pool</p></li>
+<li><p>It uses stateless HTTP connections instead of stateful internal TCP connection pools used by most database drivers
+(the stateful pools become invalid after going through
+<a class="reference external" href="https://docs.aws.amazon.com/lambda/latest/dg/running-lambda-code.html">AWS Lambda freeze-thaw cycles</a>, causing
+connection errors and burdening the database server with abandoned invalid connections)</p></li>
+<li><p>It uses AWS role-based authentication, eliminating the need for the Lambda to handle database credentials directly</p></li>
+</ul>
+</section>
+<section id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Link to this heading">¶</a></h2>
+<p>This package uses standard Python logging conventions. To enable debug output, set the package log level to DEBUG:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;aurora_data_api&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="links">
+<h2>Links<a class="headerlink" href="#links" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/chanzuckerberg/sqlalchemy-aurora-data-api">Project home page (GitHub)</a></p></li>
+<li><p><a class="reference external" href="https://sqlalchemy-aurora-data-api.readthedocs.io/en/latest/">Documentation (Read the Docs)</a></p></li>
+<li><p><a class="reference external" href="https://pypi.python.org/pypi/sqlalchemy-aurora-data-api">Package distribution (PyPI)</a></p></li>
+<li><p><a class="reference external" href="https://github.com/chanzuckerberg/sqlalchemy-aurora-data-api/blob/master/Changes.rst">Change log</a></p></li>
+<li><p><a class="reference external" href="https://github.com/chanzuckerberg/aurora-data-api">aurora-data-api</a>, the Python DB-API 2.0 client that
+sqlalchemy-aurora-data-api depends on</p></li>
+</ul>
+<section id="bugs">
+<h3>Bugs<a class="headerlink" href="#bugs" title="Link to this heading">¶</a></h3>
+<p>Please report bugs, issues, feature requests, etc. on
+<a class="reference external" href="https://github.com/chanzuckerberg/sqlalchemy-aurora-data-api/issues">GitHub</a>.</p>
+</section>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h2>
+<p>Licensed under the terms of the <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<a class="reference external image-reference" href="https://travis-ci.org/chanzuckerberg/sqlalchemy-aurora-data-api"><img alt="https://travis-ci.org/chanzuckerberg/sqlalchemy-aurora-data-api.png" src="https://travis-ci.org/chanzuckerberg/sqlalchemy-aurora-data-api.png" /></a>
+<a class="reference external image-reference" href="https://codecov.io/github/chanzuckerberg/sqlalchemy-aurora-data-api?branch=master"><img alt="https://codecov.io/github/chanzuckerberg/sqlalchemy-aurora-data-api/coverage.svg?branch=master" src="https://codecov.io/github/chanzuckerberg/sqlalchemy-aurora-data-api/coverage.svg?branch=master" /></a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/sqlalchemy-aurora-data-api"><img alt="https://img.shields.io/pypi/v/sqlalchemy-aurora-data-api.svg" src="https://img.shields.io/pypi/v/sqlalchemy-aurora-data-api.svg" /></a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/sqlalchemy-aurora-data-api"><img alt="https://img.shields.io/pypi/l/sqlalchemy-aurora-data-api.svg" src="https://img.shields.io/pypi/l/sqlalchemy-aurora-data-api.svg" /></a>
+<a class="reference external image-reference" href="https://sqlalchemy-aurora-data-api.readthedocs.org/"><img alt="https://readthedocs.org/projects/sqlalchemy-aurora-data-api/badge/?version=latest" src="https://readthedocs.org/projects/sqlalchemy-aurora-data-api/badge/?version=latest" /></a>
+</section>
+</section>
+<section id="api-documentation">
+<h1>API documentation<a class="headerlink" href="#api-documentation" title="Link to this heading">¶</a></h1>
+</section>
+
+
+          </div>
+            
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">sqlalchemy-aurora-data-api  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">sqlalchemy-aurora-data-api - An AWS Aurora Serverless Data API dialect for SQLAlchemy</a></li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright CZI. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>
